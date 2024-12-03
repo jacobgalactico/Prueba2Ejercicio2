@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Events</string>
+    <string name="events">Events</string>
+    <string name="event1">Event 1</string>
+    <string name="event2">Event 2</string>
+    <string name="event3">Event 3</string>
+    <string name="event_details">Event Details</string>
+    <string name="name">Name</string>
+    <string name="description">Description</string>
+    <string name="address">Address</string>
+    <string name="price">Price</string>
+    <string name="date">Date</string>
+    <string name="year">Year</string>
+</resources>
