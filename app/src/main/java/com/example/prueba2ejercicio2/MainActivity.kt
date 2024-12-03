@@ -44,7 +44,11 @@ class MainActivity : ComponentActivity() {
                         events = events,
                         onEventClick = { event ->
                             val intent = Intent(this@MainActivity, EventDetailActivity::class.java).apply {
-                                putExtra("event", event)
+                                putExtra("event_name", event.name)
+                                putExtra("event_description", event.description)
+                                putExtra("event_address", event.address)
+                                putExtra("event_price", event.price)
+                                putExtra("event_date", event.date)
                             }
                             startActivity(intent)
                         },
