@@ -1,6 +1,8 @@
 package com.example.prueba2ejercicio2
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,16 +18,18 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.prueba2ejercicio2.ui.theme.Prueba2Ejercicio2Theme
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 class MainActivity : ComponentActivity() {
-    private var events = mutableStateListOf(
-        Event("Concierto de Rock", "Un concierto emocionante", "Calle Falsa 123", "20€", "12/12/2024"),
-        Event("Taller de Pintura", "Aprende a pintar", "Plaza de la Cultura", "15€", "15/01/2025"),
-        Event("Feria de Tecnología", "Explora lo último en tecnología", "Centro de Convenciones", "Gratis", "01/02/2025")
-    )
+    private lateinit var sharedPreferences: SharedPreferences
+    private val gson = Gson()
+    private var events = mutableStateListOf<Event>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        sharedPreferences = getSharedPreferences("events_prefs", Context.MODE_PRIVATE)
+        loadEvents()
 
         setContent {
             Prueba2Ejercicio2Theme {
@@ -42,7 +46,7 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     EventList(
                         events = events,
-                        onEventClick = { event ->
+                        onEventClick = { event: Event ->
                             val intent = Intent(this@MainActivity, EventDetailActivity::class.java).apply {
                                 putExtra("event_name", event.name)
                                 putExtra("event_description", event.description)
@@ -52,8 +56,9 @@ class MainActivity : ComponentActivity() {
                             }
                             startActivity(intent)
                         },
-                        onEventDelete = { event ->
+                        onEventDelete = { event: Event ->
                             events.remove(event)
+                            saveEvents()
                         },
                         modifier = Modifier.padding(innerPadding)
                     )
@@ -68,7 +73,31 @@ class MainActivity : ComponentActivity() {
             val newEvent = data?.getParcelableExtra<Event>("new_event")
             if (newEvent != null) {
                 events.add(newEvent)
+                saveEvents()
             }
+        }
+    }
+
+    private fun saveEvents() {
+        val eventsJson = gson.toJson(events)
+        sharedPreferences.edit().putString("events_list", eventsJson).apply()
+    }
+
+    private fun loadEvents() {
+        val eventsJson = sharedPreferences.getString("events_list", null)
+        if (eventsJson != null) {
+            val type = object : TypeToken<List<Event>>() {}.type
+            val eventList: List<Event> = gson.fromJson(eventsJson, type)
+            events.addAll(eventList)
+        } else {
+            // Add default events if no saved events are found
+            events.addAll(
+                listOf(
+                    Event("Concierto de Rock", "Un concierto emocionante", "Calle Falsa 123", "20€", "12/12/2024"),
+                    Event("Taller de Pintura", "Aprende a pintar", "Plaza de la Cultura", "15€", "15/01/2025"),
+                    Event("Feria de Tecnología", "Explora lo último en tecnología", "Centro de Convenciones", "Gratis", "01/02/2025")
+                )
+            )
         }
     }
 
