@@ -10,20 +10,34 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.prueba2ejercicio2.ui.theme.Prueba2Ejercicio2Theme
 
 class EventDetailActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val eventName = intent.getStringExtra("event_name") ?: "event1"
+
+        val eventName = intent.getStringExtra("event_name") ?: "Nombre no disponible"
+        val eventDescription = intent.getStringExtra("event_description") ?: "Descripción no disponible"
+        val eventAddress = intent.getStringExtra("event_address") ?: "Dirección no disponible"
+        val eventPrice = intent.getStringExtra("event_price") ?: "Precio no disponible"
+        val eventDate = intent.getStringExtra("event_date") ?: "Fecha no disponible"
+
+        val event = Event(
+            name = eventName,
+            description = eventDescription,
+            address = eventAddress,
+            price = eventPrice,
+            date = eventDate
+        )
+
         setContent {
             Prueba2Ejercicio2Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    EventDetail(eventName, modifier = Modifier.padding(innerPadding))
+                    EventDetail(
+                        event = event,
+                        modifier = Modifier.padding(innerPadding)
+                    )
                 }
             }
         }
@@ -31,25 +45,12 @@ class EventDetailActivity : ComponentActivity() {
 }
 
 @Composable
-fun EventDetail(eventName: String, modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-    val resources = context.resources
-    val packageName = context.packageName
+fun EventDetail(event: Event, modifier: Modifier = Modifier) {
     Column(modifier = modifier.padding(16.dp)) {
-        Text(text = stringResource(id = resources.getIdentifier(eventName, "string", packageName)))
-        Text(text = stringResource(id = R.string.name))
-        Text(text = stringResource(id = R.string.description))
-        Text(text = stringResource(id = R.string.address))
-        Text(text = stringResource(id = R.string.price))
-        Text(text = stringResource(id = R.string.date))
-        Text(text = stringResource(id = R.string.year))
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun EventDetailPreview() {
-    Prueba2Ejercicio2Theme {
-        EventDetail("event1")
+        Text(text = "Nombre: ${event.name}")
+        Text(text = "Descripción: ${event.description}")
+        Text(text = "Dirección: ${event.address}")
+        Text(text = "Precio: ${event.price}")
+        Text(text = "Fecha: ${event.date}")
     }
 }

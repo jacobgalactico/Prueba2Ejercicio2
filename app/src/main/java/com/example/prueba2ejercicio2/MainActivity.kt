@@ -5,26 +5,43 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.prueba2ejercicio2.ui.theme.Prueba2Ejercicio2Theme
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val sampleEvents = listOf(
+            Event("Concierto de Rock", "Un concierto emocionante", "Calle Falsa 123", "20€", "12/12/2024"),
+            Event("Taller de Pintura", "Aprende a pintar", "Plaza de la Cultura", "15€", "15/01/2025"),
+            Event("Feria de Tecnología", "Explora lo último en tecnología", "Centro de Convenciones", "Gratis", "01/02/2025")
+        )
+
         setContent {
             Prueba2Ejercicio2Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    EventList(modifier = Modifier.padding(innerPadding))
+                    EventList(
+                        events = sampleEvents,
+                        onEventClick = { event ->
+                            val intent = Intent(this, EventDetailActivity::class.java).apply {
+                                putExtra("event_name", event.name)
+                                putExtra("event_description", event.description)
+                                putExtra("event_address", event.address)
+                                putExtra("event_price", event.price)
+                                putExtra("event_date", event.date)
+                            }
+                            startActivity(intent)
+                        },
+                        modifier = Modifier.padding(innerPadding)
+                    )
                 }
             }
         }
@@ -32,32 +49,16 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun EventList(modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-    val resources = context.resources
-    val packageName = context.packageName
-    val events = listOf("event1", "event2", "event3")
-    Column(modifier = modifier.padding(16.dp)) {
-        events.forEach { event ->
+fun EventList(events: List<Event>, onEventClick: (Event) -> Unit, modifier: Modifier = Modifier) {
+    LazyColumn(modifier = modifier.padding(16.dp)) {
+        items(events) { event ->
             Text(
-                text = stringResource(id = resources.getIdentifier(event, "string", packageName)),
+                text = event.name,
                 modifier = Modifier
                     .padding(vertical = 8.dp)
-                    .clickable {
-                        val intent = Intent(context, EventDetailActivity::class.java).apply {
-                            putExtra("event_name", event)
-                        }
-                        context.startActivity(intent)
-                    }
+                    .clickable { onEventClick(event) }
             )
+            Divider()
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun EventListPreview() {
-    Prueba2Ejercicio2Theme {
-        EventList()
     }
 }
