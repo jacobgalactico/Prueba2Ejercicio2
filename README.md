@@ -9,12 +9,6 @@ Esta es una aplicación de Android para gestionar eventos. La aplicación permit
 - Eliminar eventos.
 - Soporte para los idiomas inglés y español.
 
-## Capturas de Pantalla
-
-![Pantalla Principal](screenshots/main_screen.png)
-![Pantalla de Añadir Evento](screenshots/add_event_screen.png)
-![Pantalla de Detalle de Evento](screenshots/event_detail_screen.png)
-
 ## Instalación
 
 1. Clona el repositorio:
