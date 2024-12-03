@@ -94,6 +94,7 @@ fun EventList(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(text = event.name, modifier = Modifier.weight(1f))
+                Text(text = "${event.price}€", modifier = Modifier.weight(1f))
                 IconButton(onClick = { onEventDelete(event) }) {
                     Icon(Icons.Default.Delete, contentDescription = "Eliminar Evento")
                 }
